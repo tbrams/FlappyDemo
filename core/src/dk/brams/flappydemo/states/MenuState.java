@@ -18,7 +18,7 @@ public class MenuState extends State {
         cam.setToOrtho(false, FlappyGame.WIDTH/2, FlappyGame.HEIGHT/2);
 
         background = new Texture("bg.png");
-        playBtn = new Texture("playBtn.png");
+        playBtn = new Texture("playbtn.png");
     }
 
     @Override
