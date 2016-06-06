@@ -89,7 +89,7 @@ public class PlayState extends State {
         }
         sb.draw(ground,groundPos1.x, groundPos1.y);
         sb.draw(ground, groundPos2.x, groundPos2.y);
-        sb.draw(bird.getBird(),bird.getPosition().x, bird.getPosition().y);
+        sb.draw(bird.getTexture(), bird.getPosition().x, bird.getPosition().y);
         sb.end();
     }
 
@@ -107,7 +107,6 @@ public class PlayState extends State {
     public void dispose() {
         bg.dispose();
         bird.dispose();
-        ground.dispose();
         for (Tube tube : tubes) {
             tube.dispose();
         }
