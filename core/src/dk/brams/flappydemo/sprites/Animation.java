@@ -3,39 +3,36 @@ package dk.brams.flappydemo.sprites;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-/**
- * Created by tbrams on 6/6/2016 AD.
- */
 public class Animation {
-    private Array<TextureRegion> frames;
-    private float maxFrameTime;
-    private float currentFrameTime;
-    private int frameCount;
-    private int frame;
+    private Array<TextureRegion> mFrames;
+    private float mMaxFrameTime;
+    private float mCurrentFrameTime;
+    private int mFrameCount;
+    private int mFrame;
 
-    public Animation(TextureRegion region, int frameCount, float cycleTime) {
-        frames = new Array<TextureRegion>();
-        int frameWidth = region.getRegionWidth()/frameCount;
+    public Animation(TextureRegion texture, int frameCount, float cycleTime) {
+        mFrames = new Array<TextureRegion>();
+        int frameWidth = texture.getRegionWidth()/frameCount;
         for (int i = 0; i < frameCount; i++) {
-            frames.add(new TextureRegion(region, i * frameWidth, 0, frameWidth, region.getRegionHeight()));
+            mFrames.add(new TextureRegion(texture, i * frameWidth, 0, frameWidth, texture.getRegionHeight()));
         }
-        this.frameCount=frameCount;
-        maxFrameTime = cycleTime/frameCount;
-        frame = 0;
+        this.mFrameCount =frameCount;
+        mMaxFrameTime = cycleTime/frameCount;
+        mFrame = 0;
     }
 
-    public void update(float dt){
-        currentFrameTime+=dt;
-        if (currentFrameTime>maxFrameTime){
-            frame++;
-            currentFrameTime=0;
+    public void update(float delta){
+        mCurrentFrameTime +=delta;
+        if (mCurrentFrameTime > mMaxFrameTime){
+            mFrame++;
+            mCurrentFrameTime =0;
         }
-        if (frame==frameCount){
-            frame=0;
+        if (mFrame == mFrameCount){
+            mFrame =0;
         }
     }
 
     public TextureRegion getFrame(){
-        return frames.get(frame);
+        return mFrames.get(mFrame);
     }
 }

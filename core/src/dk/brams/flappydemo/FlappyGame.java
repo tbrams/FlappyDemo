@@ -14,35 +14,35 @@ public class FlappyGame extends ApplicationAdapter {
 	public static final int HEIGHT=800;
 	public static final String TITLE = "Flappy Game";
 
-	private GameStateManager gsm;
-	private SpriteBatch batch;
-	private Music music;
+	private GameStateManager mGSM;
+	private SpriteBatch mBatch;
+	private Music mMusic;
 
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		gsm = new GameStateManager();
+		mBatch = new SpriteBatch();
+		mGSM = new GameStateManager();
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 
-		music = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
-		music.setLooping(true);
-		music.setVolume(.1f);
-		music.play();
+		mMusic = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
+		mMusic.setLooping(true);
+		mMusic.setVolume(.1f);
+		mMusic.play();
 
-		gsm.push(new MenuState(gsm));
+		mGSM.push(new MenuState(mGSM));
 
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		gsm.update(Gdx.graphics.getDeltaTime());
-		gsm.render(batch);
+		mGSM.update(Gdx.graphics.getDeltaTime());
+		mGSM.render(mBatch);
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
-		music.dispose();
+		mMusic.dispose();
 	}
 }

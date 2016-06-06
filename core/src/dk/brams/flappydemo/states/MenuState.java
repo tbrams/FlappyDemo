@@ -6,25 +6,23 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import dk.brams.flappydemo.FlappyGame;
 
-/**
- * Created by tbrams on 6/6/2016 AD.
- */
 public class MenuState extends State {
-    private Texture background;
-    private Texture playBtn;
+    private Texture mBackground;
+    private Texture mPlayButton;
 
     public MenuState(GameStateManager gsm) {
         super(gsm);
-        cam.setToOrtho(false, FlappyGame.WIDTH/2, FlappyGame.HEIGHT/2);
 
-        background = new Texture("bg.png");
-        playBtn = new Texture("playbtn.png");
+        mBackground = new Texture("bg.png");
+        mPlayButton = new Texture("playbtn.png");
+
+        mCam.setToOrtho(false, FlappyGame.WIDTH/2, FlappyGame.HEIGHT/2);
     }
 
     @Override
     public void handleInput() {
         if (Gdx.input.justTouched()){
-            gsm.set(new PlayState(gsm));
+            mGSM.set(new PlayState(mGSM));
         }
     }
 
@@ -34,20 +32,21 @@ public class MenuState extends State {
     }
 
     @Override
-    public void dispose() {
-        background.dispose();
-        playBtn.dispose();
-        System.out.println("MenuState disposed ");
+    public void render(SpriteBatch spriteBatch) {
 
+        spriteBatch.setProjectionMatrix(mCam.combined);
+
+        spriteBatch.begin();
+        spriteBatch.draw(mBackground, 0, 0);
+        spriteBatch.draw(mPlayButton, mCam.position.x - mPlayButton.getWidth() / 2, mCam.position.y);
+        spriteBatch.end();
     }
 
-    @Override
-    public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(cam.combined);
 
-        sb.begin();
-        sb.draw(background,0,0);
-        sb.draw(playBtn, cam.position.x-playBtn.getWidth()/2, cam.position.y);
-        sb.end();
+    @Override
+    public void dispose() {
+        mBackground.dispose();
+        mPlayButton.dispose();
+        System.out.println("Menu State disposed ");
     }
 }

@@ -1,115 +1,144 @@
 package dk.brams.flappydemo.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.sun.org.apache.xpath.internal.operations.String;
 
 import dk.brams.flappydemo.FlappyGame;
 import dk.brams.flappydemo.sprites.Bird;
 import dk.brams.flappydemo.sprites.Tube;
 
-/**
- * Created by tbrams on 6/6/2016 AD.
- */
 public class PlayState extends State {
 
     private static final int TUBE_SPACING = 125;
     private static final int TUBE_COUNT=4;
     private static final int GROUND_Y_OFFSET=-50;
 
-    private Bird bird;
-    private Texture bg;
-    private Texture ground;
-    private Vector2 groundPos1, groundPos2;
-    private Array<Tube> tubes;
+    private Bird mBird;
+    private Texture mBackground;
+    private Texture mGround;
+    private Vector2 mGroundPos1, mGroundPos2;
+    private Array<Tube> mTubeArray;
+    private Texture mGameOver;
+
+    private boolean mIsGameOver;
+    private Vector2 mGameOverPosition;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
-        bird = new Bird(50,300);
-        cam.setToOrtho(false, FlappyGame.WIDTH/2, FlappyGame.HEIGHT/2);
-        bg = new Texture("bg.png");
-        ground = new Texture("ground.png");
-        groundPos1 = new Vector2(cam.position.x - cam.viewportWidth / 2, GROUND_Y_OFFSET);
-        groundPos2 = new Vector2(cam.position.x - cam.viewportWidth / 2+ ground.getWidth(), GROUND_Y_OFFSET);
-        tubes = new Array<Tube>();
+
+        mIsGameOver = false;
+        mGameOver = new Texture("gameover.png");
+        mGameOverPosition = new Vector2();
+
+
+        mBird = new Bird(50,300);
+        mBackground = new Texture("bg.png");
+        mGround = new Texture("ground.png");
+        mGroundPos1 = new Vector2(mCam.position.x - mCam.viewportWidth / 2, GROUND_Y_OFFSET);
+        mGroundPos2 = new Vector2(mCam.position.x - mCam.viewportWidth / 2+ mGround.getWidth(), GROUND_Y_OFFSET);
+        mGameOverPosition = new Vector2(mCam.position.x + mCam.viewportWidth / 2, 100);
+
+        mTubeArray = new Array<Tube>();
         for (int i = 0; i <= TUBE_COUNT; i++) {
-            tubes.add(new Tube(i*(TUBE_SPACING+Tube.TUBE_WIDTH)));
+            mTubeArray.add(new Tube(i*(TUBE_SPACING+Tube.TUBE_WIDTH)));
         }
+
+        mCam.setToOrtho(false, FlappyGame.WIDTH/2, FlappyGame.HEIGHT/2);
     }
+
 
     @Override
     protected void handleInput() {
         if (Gdx.input.justTouched()) {
-            bird.jump();
+            if (mIsGameOver) {
+                //clear game over logo and start the game
+                mGSM.set(new PlayState(mGSM));
+            } else {
+                mBird.jump();
+            }
         }
     }
 
     @Override
-    protected void update(float dt) {
+    protected void update(float delta) {
         handleInput();
         updateGround();
-        bird.update(dt);
+        mBird.update(delta);
 
-        // Update cam position relative to bird
-        cam.position.x = bird.getPosition().x + 80;
-        cam.update();
+        // Update mCam position relative to mBird
+        mCam.position.x = mBird.getPosition().x + 80;
+        mCam.update();
 
-        
-        for (Tube tube: tubes) {
-            // Handle tubes off view here
-            if (cam.position.x-cam.viewportWidth/2 > tube.getPosTopTube().x+tube.getTopTube().getWidth()) {
-                tube.reposition(tube.getPosTopTube().x+((Tube.TUBE_WIDTH+TUBE_SPACING)*TUBE_COUNT));
+        mGameOverPosition.x = mCam.position.x - mGameOver.getWidth() / 2;
+        mGameOverPosition.y = mCam.position.y;
+
+
+        for (Tube tube: mTubeArray) {
+            // Handle mTubeArray off view here
+            if (mCam.position.x - mCam.viewportWidth / 2 > tube.getPosTopTube().x + tube.getTopTube().getWidth()) {
+                tube.reposition(tube.getPosTopTube().x + ((Tube.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT));
             }
 
-            // Qucik and dirty check for collision...
-            if (tube.collide(bird.getBounds())) {
-                gsm.set(new PlayState(gsm));
+            // Quick and dirty check for collision...
+            if (tube.collide(mBird.getBounds())) {
+                mIsGameOver = true;
                 break;
             }
         }
 
         // Ground collision check
-        if (bird.getPosition().y<ground.getHeight()+GROUND_Y_OFFSET){
-            gsm.set(new PlayState(gsm));
+        if (mBird.getPosition().y <= mGround.getHeight() + GROUND_Y_OFFSET) {
+            mIsGameOver = true;
         }
     }
 
+
     @Override
-    public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(cam.combined);
-        sb.begin();
-        sb.draw(bg, cam.position.x - cam.viewportWidth / 2, 0);
-        for (Tube tube:tubes) {
-            sb.draw(tube.getTopTube(),tube.getPosTopTube().x, tube.getPosTopTube().y);
-            sb.draw(tube.getBottomTube(), tube.getPosBottomTube().x, tube.getPosBottomTube().y);
+    public void render(SpriteBatch spriteBatch) {
+        spriteBatch.setProjectionMatrix(mCam.combined);
+
+        spriteBatch.begin();
+        spriteBatch.draw(mBackground, mCam.position.x - mCam.viewportWidth / 2, 0);
+
+        for (Tube tube: mTubeArray) {
+            spriteBatch.draw(tube.getTopTube(),tube.getPosTopTube().x, tube.getPosTopTube().y);
+            spriteBatch.draw(tube.getBottomTube(), tube.getPosBotTube().x, tube.getPosBotTube().y);
         }
-        sb.draw(ground,groundPos1.x, groundPos1.y);
-        sb.draw(ground, groundPos2.x, groundPos2.y);
-        sb.draw(bird.getTexture(), bird.getPosition().x, bird.getPosition().y);
-        sb.end();
+        spriteBatch.draw(mGround, mGroundPos1.x, mGroundPos1.y);
+        spriteBatch.draw(mGround, mGroundPos2.x, mGroundPos2.y);
+
+        spriteBatch.draw(mBird.getTexture(), mBird.getPosition().x, mBird.getPosition().y);
+
+        if (mIsGameOver) {
+            spriteBatch.draw(mGameOver, mGameOverPosition.x, mGameOverPosition.y);
+        }
+
+        spriteBatch.end();
     }
 
     public void updateGround() {
-        if (cam.position.x - cam.viewportWidth/2>groundPos1.x+ground.getWidth()) {
-            groundPos1.add(ground.getWidth() * 2, 0);
+        if (mCam.position.x - mCam.viewportWidth/2> mGroundPos1.x+ mGround.getWidth()) {
+            mGroundPos1.add(mGround.getWidth() * 2, 0);
         }
-        if (cam.position.x - cam.viewportWidth/2>groundPos2.x+ground.getWidth()) {
-            groundPos2.add(ground.getWidth() * 2, 0);
+        if (mCam.position.x - mCam.viewportWidth/2> mGroundPos2.x+ mGround.getWidth()) {
+            mGroundPos2.add(mGround.getWidth() * 2, 0);
         }
     }
 
 
     @Override
     public void dispose() {
-        bg.dispose();
-        bird.dispose();
-        for (Tube tube : tubes) {
-            tube.dispose();
+        mBackground.dispose();
+        mGround.dispose();
+        mBird.dispose();
+        mGameOver.dispose();
+        for (int i = 0; i < mTubeArray.size; i++) {
+            mTubeArray.get(i).dispose();
         }
-        System.out.println("PlayState disposed ");
+
+        System.out.println("Play State disposed ");
     }
 }

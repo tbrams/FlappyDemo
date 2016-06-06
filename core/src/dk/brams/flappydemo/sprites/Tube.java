@@ -6,61 +6,60 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Random;
 
-/**
- * Created by tbrams on 6/6/2016 AD.
- */
+
 public class Tube {
     private static final int FLUCTUATION = 130;
     private static final int TUBE_GAP = 100;
     private static final int LOWEST_OPENING= 120;
     public static final int TUBE_WIDTH=52;
-    private Texture topTube, bottomTube;
-    private Vector2 posTopTube, posBottomTube;
-    private Rectangle boundsTop, boundsBottom;
-    private Random rand;
+    private Texture mTopTube;
+    private Texture mBotTube;
+    private Vector2 posTopTube, posBotTube;
+    private Rectangle mBoundsTop, mBoundsBot;
+    private Random mRand;
+
+    public Texture getTopTube() {
+        return mTopTube;
+    }
 
     public Texture getBottomTube() {
-        return bottomTube;
+        return mBotTube;
     }
 
     public Vector2 getPosTopTube() {
         return posTopTube;
     }
 
-    public Vector2 getPosBottomTube() {
-        return posBottomTube;
-    }
-
-    public Texture getTopTube() {
-        return topTube;
+    public Vector2 getPosBotTube() {
+        return posBotTube;
     }
 
     public Tube(float x){
-        topTube = new Texture("toptube.png");
-        bottomTube = new Texture("bottomtube.png");
-        rand = new Random();
+        mTopTube = new Texture("toptube.png");
+        mBotTube = new Texture("bottomtube.png");
+        mRand = new Random();
 
-        posTopTube = new Vector2(x, rand.nextInt(FLUCTUATION) + TUBE_GAP + LOWEST_OPENING);
-        posBottomTube = new Vector2(x, posTopTube.y - bottomTube.getHeight()-TUBE_GAP);
+        posTopTube = new Vector2(x, mRand.nextInt(FLUCTUATION) + TUBE_GAP + LOWEST_OPENING);
+        posBotTube = new Vector2(x, posTopTube.y - mBotTube.getHeight()-TUBE_GAP);
 
-        boundsTop = new Rectangle(getPosTopTube().x, getPosTopTube().y, topTube.getWidth(), topTube.getHeight());
-        boundsBottom = new Rectangle(getPosBottomTube().x, getPosBottomTube().y, bottomTube.getWidth(), bottomTube.getHeight());
+        mBoundsTop = new Rectangle(getPosTopTube().x, getPosTopTube().y, mTopTube.getWidth(), mTopTube.getHeight());
+        mBoundsBot = new Rectangle(getPosBotTube().x, getPosBotTube().y, mBotTube.getWidth(), mBotTube.getHeight());
     }
 
     public void reposition(float x) {
-        posTopTube.set(x, rand.nextInt(FLUCTUATION) + TUBE_GAP + LOWEST_OPENING);
-        posBottomTube.set(x, posTopTube.y - bottomTube.getHeight()-TUBE_GAP);
-        boundsTop.setPosition(posTopTube.x, posTopTube.y);
-        boundsBottom.setPosition(posBottomTube.x, posBottomTube.y);
+        posTopTube.set(x, mRand.nextInt(FLUCTUATION) + TUBE_GAP + LOWEST_OPENING);
+        posBotTube.set(x, posTopTube.y - mBotTube.getHeight()-TUBE_GAP);
+        mBoundsTop.setPosition(posTopTube.x, posTopTube.y);
+        mBoundsBot.setPosition(posBotTube.x, posBotTube.y);
     }
 
     public boolean collide(Rectangle player) {
-        return player.overlaps(boundsTop) || player.overlaps(boundsBottom);
+        return player.overlaps(mBoundsTop) || player.overlaps(mBoundsBot);
     }
 
     public void dispose(){
-        topTube.dispose();
-        bottomTube.dispose();
+        mTopTube.dispose();
+        mBotTube.dispose();
     }
 
 }

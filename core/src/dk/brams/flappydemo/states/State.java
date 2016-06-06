@@ -4,25 +4,22 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
-/**
- * Created by tbrams on 6/6/2016 AD.
- */
 public abstract class State {
-    protected OrthographicCamera cam;
-    protected Vector3 mouse;
-    protected GameStateManager gsm;
+    protected OrthographicCamera mCam;
+    protected Vector3 mMouse;
+    protected GameStateManager mGSM;
 
     protected State(GameStateManager gsm) {
-        this.gsm = gsm;
-        cam = new OrthographicCamera();
-        mouse = new Vector3();
+        mGSM = gsm;
+        mCam = new OrthographicCamera();
+        mMouse = new Vector3();
     }
 
     protected abstract void handleInput();
 
-    protected abstract void update(float dt);
+    protected abstract void update(float delta);
 
-    public abstract void render(SpriteBatch sb);
+    public abstract void render(SpriteBatch spriteBatch);
 
     public abstract void dispose();
 }
