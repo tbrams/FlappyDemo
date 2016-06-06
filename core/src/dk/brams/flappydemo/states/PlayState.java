@@ -1,9 +1,11 @@
 package dk.brams.flappydemo.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.sun.org.apache.xpath.internal.operations.String;
 
 import dk.brams.flappydemo.FlappyGame;
 import dk.brams.flappydemo.sprites.Bird;
@@ -59,6 +61,7 @@ public class PlayState extends State {
             // Qucik and dirty check for collision...
             if (tube.collide(bird.getBounds())) {
                 gsm.set(new PlayState(gsm));
+                break;
             }
         }
     }
@@ -78,6 +81,11 @@ public class PlayState extends State {
 
     @Override
     public void dispose() {
-
+        bg.dispose();
+        bird.dispose();
+        for (Tube tube : tubes) {
+            tube.dispose();
+        }
+        System.out.println("PlayState disposed ");
     }
 }

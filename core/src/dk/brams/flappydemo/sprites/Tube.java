@@ -58,4 +58,9 @@ public class Tube {
         return player.overlaps(boundsTop) || player.overlaps(boundsBottom);
     }
 
+    public void dispose(){
+        topTube.dispose();
+        bottomTube.dispose();
+    }
+
 }
