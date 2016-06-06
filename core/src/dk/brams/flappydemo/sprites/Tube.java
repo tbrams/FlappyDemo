@@ -50,6 +50,12 @@ public class Tube {
     public void reposition(float x) {
         posTopTube.set(x, rand.nextInt(FLUCTUATION) + TUBE_GAP + LOWEST_OPENING);
         posBottomTube.set(x, posTopTube.y - bottomTube.getHeight()-TUBE_GAP);
+        boundsTop.setPosition(posTopTube.x, posTopTube.y);
+        boundsBottom.setPosition(posBottomTube.x, posBottomTube.y);
+    }
+
+    public boolean collide(Rectangle player) {
+        return player.overlaps(boundsTop) || player.overlaps(boundsBottom);
     }
 
 }
